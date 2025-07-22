@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>House Chore & Expense Tracker</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f5f7fa;
+      --card: #fff;
+      --accent: #4CAF50;
+      --border: #e0e0e0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: #333;
+    }
+
+    header {
+      padding: 30px;
+      text-align: center;
+      background-color: var(--card);
+      border-bottom: 1px solid var(--border);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 2rem;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+
+    section {
+      background: var(--card);
+      padding: 20px;
+      margin-bottom: 30px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    h2 {
+      font-size: 1.3rem;
+      margin-top: 0;
+      margin-bottom: 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+    }
+
+    th, td {
+      padding: 10px;
+      text-align: center;
+      border: 1px solid var(--border);
+    }
+
+    th {
+      background-color: #f0f0f0;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    textarea, input[type="text"], input[type="number"], input[type="file"] {
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+
+    button {
+      padding: 10px;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #3e9442;
+    }
+
+    .flex-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 30px;
+    }
+
+    .flex-item {
+      flex: 1;
+      min-width: 300px;
+    }
+
+    ul {
+      padding-left: 20px;
+      margin: 0;
+    }
+
+    li {
+      margin-bottom: 10px;
+    }
+
+    img {
+      max-width: 100px;
+      margin-top: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🏠 House Chore & Expense Tracker</h1>
+  </header>
+
+  <main class="container">
+
+    <section>
+      <h2>🔄 Weekly Chore Rotation</h2>
+      <table id="choreTable">
+        <thead>
+          <tr>
+            <th>Week</th>
+            <th>Downstairs Bathroom</th>
+            <th>Upstairs Bathroom</th>
+            <th>Kitchen</th>
+            <th>Living Room & Entrance</th>
+            <th>Hallway</th>
+            <th>Buying Supplies</th>
+          </tr>
+        </thead>
+        <tbody id="choreBody"></tbody>
+      </table>
+    </section>
+
+    <div class="flex-container">
+      <section class="flex-item">
+        <h2>📝 Suggest Items to Buy</h2>
+        <form id="suggestionForm">
+          <textarea id="suggestionInput" placeholder="e.g. toilet paper, dish soap" required></textarea>
+          <button type="submit">Add Suggestion</button>
+        </form>
+        <ul id="suggestionList"></ul>
+      </section>
+
+      <section class="flex-item">
+        <h2>🧾 Upload Receipt</h2>
+        <form id="receiptForm">
+          <input type="text" id="payerInput" placeholder="Your name" required />
+          <input type="number" id="amountInput" placeholder="Total amount in $" required />
+          <input type="file" id="receiptFile" accept="image/*" required />
+          <button type="submit">Upload Receipt</button>
+        </form>
+        <ul id="receiptList"></ul>
+      </section>
+    </div>
+
+  </main>
+
+  <script>
+    const people = ["Soma", "Gian Carlos", "Mustafa Erem", "Masataka", "Gulenaz", "Skyla"];
+    const chores = [
+      "Downstairs Bathroom",
+      "Upstairs Bathroom",
+      "Kitchen",
+      "Living Room & Entrance",
+      "Hallway",
+      "Buying Supplies"
+    ];
+
+    const choreBody = document.getElementById("choreBody");
+
+    for (let week = 0; week < 6; week++) {
+      const row = document.createElement("tr");
+      const weekCell = document.createElement("td");
+      weekCell.textContent = `Week ${week + 1}`;
+      row.appendChild(weekCell);
+
+      for (let i = 0; i < chores.length; i++) {
+        const choreCell = document.createElement("td");
+        const personIndex = (i + week) % people.length;
+        choreCell.textContent = people[personIndex];
+        row.appendChild(choreCell);
+      }
+
+      choreBody.appendChild(row);
+    }
+
+    // Suggestion form
+    document.getElementById("suggestionForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const suggestion = document.getElementById("suggestionInput").value.trim();
+      if (suggestion !== "") {
+        const li = document.createElement("li");
+        li.textContent = suggestion;
+        document.getElementById("suggestionList").appendChild(li);
+        document.getElementById("suggestionForm").reset();
+      }
+    });
+
+    // Receipt form
+    document.getElementById("receiptForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const payer = document.getElementById("payerInput").value.trim();
+      const amount = parseFloat(document.getElementById("amountInput").value);
+      const fileInput = document.getElementById("receiptFile");
+      const file = fileInput.files[0];
+
+      if (!payer || isNaN(amount) || !file) return;
+
+      const reader = new FileReader();
+      reader.onload = function() {
+        const li = document.createElement("li");
+        li.innerHTML = `
+          <strong>${payer}</strong> paid <strong>$${amount.toFixed(2)}</strong><br>
+          Everyone owes <strong>$${(amount / 6).toFixed(2)}</strong> each<br>
+          <img src="${reader.result}" alt="Receipt image" />
+        `;
+        document.getElementById("receiptList").appendChild(li);
+        document.getElementById("receiptForm").reset();
+      };
+      reader.readAsDataURL(file);
+    });
+  </script>
+</body>
+</html>
